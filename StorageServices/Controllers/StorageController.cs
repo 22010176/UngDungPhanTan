@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StorageServices.Services;
 
@@ -11,8 +13,12 @@ public class StorageController(MinioService minioService) : ControllerBase
   readonly MinioService _minioService = minioService;
 
   [HttpGet]
-  public async Task<ActionResult<ICollection>> GetFiles(string path)
+  [Authorize]
+  public async Task<ActionResult<ICollection>> GetFiles()
   {
-    return Ok(await _minioService.GetListObjects(path));
+    var root = User.FindFirst("Root")?.Value;
+    if (string.IsNullOrEmpty(root)) return Ok(new List<string>() { });
+
+    return Ok(await _minioService.GetListObjects(root));
   }
 }

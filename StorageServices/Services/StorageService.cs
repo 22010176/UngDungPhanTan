@@ -9,8 +9,8 @@ public class StorageService(MinioService minioService) : Storage.StorageBase
   private readonly MinioService _minioService = minioService;
   public override async Task<InitUserStorageResponse> InitUserStorage(InitUserStorageRequest request, ServerCallContext context)
   {
+    Console.WriteLine("Test");
     var result = await _minioService.CreateFolder(request.BucketId);
-
     return new() { Status = result ? "Success" : "Failed" };
   }
 

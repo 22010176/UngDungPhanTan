@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option csharp_namespace = "UserServices.Grpc";
+
+service Storage {
+  rpc InitUserStorage(InitUserStorageRequest) returns (InitUserStorageResponse);
+
+  rpc DeleteUserStorage(DeleteUserStorageRequest) returns (DeleteUserStorageResponse);
+}
+
+message DeleteUserStorageRequest {
+  string bucket_id = 1;
+}
+
+message DeleteUserStorageResponse {
+  string status = 1;
+}
+
+
+message InitUserStorageRequest {
+  string bucket_id = 1;
+}
+
+message InitUserStorageResponse {
+  string status = 1;
+}

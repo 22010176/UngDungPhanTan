@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using UserServices.Grpc;
 using UserServices.Services;
 
 namespace UserServices;
@@ -15,7 +16,11 @@ public class Startup(IConfiguration configuration)
   {
     services.AddCors(options =>
       options.AddDefaultPolicy(builder =>
-        builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials()));
+        builder
+        .SetIsOriginAllowed(_ => true)
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()));
 
     services.AddControllers()
       .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -26,6 +31,7 @@ public class Startup(IConfiguration configuration)
     //     options.LoginPath = "/auth/login";
     //     options.AccessDeniedPath = "/auth/denied";
     //   });
+
     services.AddAuthentication("Bearer")
       .AddJwtBearer("Bearer", options =>
       {
@@ -71,6 +77,10 @@ public class Startup(IConfiguration configuration)
       });
     });
     services.AddSingleton<UserService>();
+    services.AddGrpcClient<Storage.StorageClient>(o =>
+    {
+      o.Address = new Uri("http://localhost:5002"); // gRPC server URL
+    });
   }
 
   public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -85,7 +95,7 @@ public class Startup(IConfiguration configuration)
     app.UseCors();
     app.UseHttpsRedirection();
 
-    app.UseRouting();
+    // app.UseRouting();
     app.UseAuthentication();
     app.UseAuthorization();
 
