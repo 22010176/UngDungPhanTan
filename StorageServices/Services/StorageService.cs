@@ -7,12 +7,11 @@ namespace StorageServices.Services;
 public class StorageService(MinioService minioService) : Storage.StorageBase
 {
   private readonly MinioService _minioService = minioService;
-  public override Task<InitUserStorageResponse> InitUserStorage(InitUserStorageRequest request, ServerCallContext context)
+  public override async Task<InitUserStorageResponse> InitUserStorage(InitUserStorageRequest request, ServerCallContext context)
   {
-    return Task.FromResult(new InitUserStorageResponse()
-    {
-      Status = request.BucketId
-    });
+    var result = await _minioService.CreateFolder(request.BucketId);
+
+    return new() { Status = result ? "Success" : "Failed" };
   }
 
   public override Task<DeleteUserStorageResponse> DeleteUserStorage(DeleteUserStorageRequest request, ServerCallContext context)

@@ -1,8 +1,11 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using UserServices.Models;
 using UserServices.Services;
 
@@ -25,10 +28,21 @@ public class AuthController(AppDbContext context, UserService userService) : Con
       new(ClaimTypes.Email, user.Email),
       new("Root", user.Root)
     ];
-    var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "MyCookieAuth"));
-    await HttpContext.SignInAsync("MyCookieAuth", principal);
 
-    return Ok(new { Message = "Login!" });
+    // var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "MyCookieAuth"));
+    // await HttpContext.SignInAsync("MyCookieAuth", principal);
+
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("supersecretkey123456".PadRight(256)));
+    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+    var token = new JwtSecurityToken(
+      claims: claims,
+      expires: DateTime.Now.AddMinutes(30),
+      signingCredentials: creds
+    );
+
+    var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+    return Ok(new { Message = "Login!", Token = jwt });
   }
 
   [Authorize]

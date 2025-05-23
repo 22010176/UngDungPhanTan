@@ -1,6 +1,6 @@
-
 using Minio;
 using Minio.DataModel.Args;
+using StorageServices.Utils;
 
 namespace StorageServices.Services;
 
@@ -33,6 +33,15 @@ public class MinioService
     return true;
   }
 
+  public static async Task<bool> DeleteBucket(IMinioClient client, string bucketName)
+  {
+    var exists = await IsBucketExists(client, bucketName);
+    if (!exists) return false;
+
+    await client.RemoveBucketAsync(new RemoveBucketArgs().WithBucket(bucketName));
+    return true;
+  }
+
   readonly IMinioClient client;
 
   public MinioService(IConfiguration configuration)
@@ -53,5 +62,43 @@ public class MinioService
   public async Task<bool> IsBucketExists(string bucketName)
   {
     return await IsBucketExists(client, bucketName);
+  }
+
+  public async Task<bool> CreateFolder(string folderName)
+  {
+    string path = folderName[^1] == '/' ? folderName : folderName + "/";
+
+    try
+    {
+      var emptyStream = new MemoryStream([0]);
+      await client.PutObjectAsync(new PutObjectArgs()
+        .WithBucket("test-bucket")
+        .WithObject(PathUtils.FixFolderPath(path))
+        .WithStreamData(emptyStream)
+        .WithObjectSize(emptyStream.Length)
+        .WithContentType("application/x-directory"));
+    }
+    catch (Exception)
+    {
+      return false;
+      throw;
+    }
+
+    return true;
+  }
+  public async Task<ICollection<string>> GetListObjects(string folderName)
+  {
+    var args = new ListObjectsArgs()
+      .WithBucket("test-bucket")
+      .WithPrefix(PathUtils.FixFolderPath(folderName))
+      .WithRecursive(false)
+      .WithVersions(false);
+
+    List<string> items = [];
+    await foreach (var item in client.ListObjectsEnumAsync(args).ConfigureAwait(false))
+    {
+      items.Add(item.Key);
+    }
+    return items;
   }
 }

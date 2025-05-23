@@ -5,12 +5,12 @@ public class Startup(IConfiguration configuration)
 {
   public IConfiguration Configuration = configuration;
 
-  public async Task InitMinio(IServiceCollection services)
+  public void InitMinio(IServiceCollection services)
   {
     services.AddScoped<MinioService>();
   }
 
-  public async Task ConfigureServices(IServiceCollection services)
+  public void ConfigureServices(IServiceCollection services)
   {
     services.AddCors(options =>
     {
@@ -28,7 +28,7 @@ public class Startup(IConfiguration configuration)
       c.IncludeGrpcXmlComments(filePath, includeControllerXmlComments: true);
     });
 
-    await InitMinio(services);
+    InitMinio(services);
   }
 
   public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -40,8 +40,8 @@ public class Startup(IConfiguration configuration)
       app.UseSwaggerUI();
     }
     app.UseCors();
-    app.MapControllers();
     app.MapGrpcService<GreeterService>();
     app.MapGrpcService<StorageService>();
+    app.MapControllers();
   }
 }
