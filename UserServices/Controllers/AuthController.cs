@@ -29,7 +29,6 @@ public class AuthController(AppDbContext context, UserService userService) : Con
     await HttpContext.SignInAsync("MyCookieAuth", principal);
 
     return Ok(new { Message = "Login!" });
-
   }
 
   [Authorize]

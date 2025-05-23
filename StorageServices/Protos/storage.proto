@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option csharp_namespace = "StorageServices.Grpc";
+import "google/api/annotations.proto";
+
+service Storage {
+  rpc InitUserStorage(InitUserStorageRequest) returns (InitUserStorageResponse) {
+    option (google.api.http) = {
+      get: "/init-user-storage"
+    };
+  }
+
+  rpc DeleteUserStorage(DeleteUserStorageRequest) returns (DeleteUserStorageResponse) {
+    option (google.api.http) = {
+      get: "/delete-user-storage"
+    };
+  }
+}
+
+message DeleteUserStorageRequest {
+  string bucket_id = 1;
+}
+
+message DeleteUserStorageResponse {
+  string status = 1;
+}
+
+
+message InitUserStorageRequest {
+  string bucket_id = 1;
+}
+
+message InitUserStorageResponse {
+  string status = 1;
+}

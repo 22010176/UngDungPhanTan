@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +43,8 @@ public class UserController(AppDbContext context, UserService userService) : Con
     await _context.SaveChangesAsync();
 
     // Send request to Storage server
+    using var channel = GrpcChannel.ForAddress("http");
+
 
     return Ok(_context.Users.Where(u => u.Email == input.Email).FirstOrDefault());
   }
