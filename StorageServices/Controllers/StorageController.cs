@@ -17,8 +17,19 @@ public class StorageController(MinioService minioService) : ControllerBase
   public async Task<ActionResult<ICollection>> GetFiles()
   {
     var root = User.FindFirst("Root")?.Value;
-    if (string.IsNullOrEmpty(root)) return Ok(new List<string>() { });
+    if (string.IsNullOrEmpty(root)) return Unauthorized();
 
     return Ok(await _minioService.GetListObjects(root));
   }
+
+  [HttpGet("{*path}")]
+  [Authorize]
+  public async Task<ActionResult<ICollection>> GetFiles(string path = "")
+  {
+    var root = User.FindFirst("Root")?.Value;
+    if (string.IsNullOrEmpty(root)) return Ok(new List<string>() { });
+
+    return Ok(await _minioService.GetListObjects(string.Join("/", new List<string>() { root, path })));
+  }
+
 }

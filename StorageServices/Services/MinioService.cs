@@ -1,4 +1,5 @@
 using Minio;
+using Minio.DataModel;
 using Minio.DataModel.Args;
 using StorageServices.Utils;
 
@@ -86,7 +87,7 @@ public class MinioService
 
     return true;
   }
-  public async Task<ICollection<string>> GetListObjects(string folderName)
+  public async Task<ICollection<Item>> GetListObjects(string folderName)
   {
     var args = new ListObjectsArgs()
       .WithBucket("test-bucket")
@@ -94,11 +95,10 @@ public class MinioService
       .WithRecursive(false)
       .WithVersions(false);
 
-    List<string> items = [];
+    List<Item> items = [];
     await foreach (var item in client.ListObjectsEnumAsync(args).ConfigureAwait(false))
-    {
-      items.Add(item.Key);
-    }
+      items.Add(item);
+
     return items;
   }
 }

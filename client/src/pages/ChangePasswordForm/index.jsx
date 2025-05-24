@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Card, message, Space } from 'antd';
-import { LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router';
+import { EyeInvisibleOutlined, EyeTwoTone, LockOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Input, message, Space } from 'antd';
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
-const ChangePasswordForm = () => {
+import withContext from '@/hoc/withContext';
+import { Context, initialValues, reducer } from './context';
+
+const Page = () => {
   const navigate = useNavigate()
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -71,11 +74,7 @@ const ChangePasswordForm = () => {
             />
           </Form.Item>
 
-          <Form.Item
-            name="confirmPassword"
-            label="Xác nhận mật khẩu mới"
-            rules={[{ validator: validateConfirmPassword }]}
-          >
+          <Form.Item name="confirmPassword" label="Xác nhận mật khẩu mới" rules={[{ validator: validateConfirmPassword }]}>
             <Input.Password
               prefix={<LockOutlined className="text-gray-400" />}
               placeholder="Nhập lại mật khẩu mới"
@@ -106,4 +105,5 @@ const ChangePasswordForm = () => {
   );
 };
 
+const ChangePasswordForm = withContext(Page, Context, initialValues, reducer);
 export default ChangePasswordForm;

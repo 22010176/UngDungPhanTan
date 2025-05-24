@@ -18,11 +18,11 @@ public class AuthController(AppDbContext context, UserService userService) : Con
   readonly AppDbContext _context = context;
   readonly UserService _service = userService;
 
-  [HttpPost("/auth/login")]
-  public async Task<IActionResult> Login(string mail, string matKhau)
+  [HttpPost("login")]
+  public async Task<IActionResult> Login(string mail, string password)
   {
     User? user = await _context.Users.Where(i => i.Email == mail).FirstOrDefaultAsync();
-    if (user is null || !_service.VerifyPassword(user.MatKhau, matKhau)) return Unauthorized();
+    if (user is null || !_service.VerifyPassword(user.HashedPassword, password)) return Unauthorized();
 
     List<Claim> claims = [
       new(ClaimTypes.Email, user.Email),
@@ -37,7 +37,7 @@ public class AuthController(AppDbContext context, UserService userService) : Con
 
     var token = new JwtSecurityToken(
       claims: claims,
-      expires: DateTime.Now.AddMinutes(30),
+      expires: DateTime.Now.AddMinutes(300),
       signingCredentials: creds
     );
 
@@ -54,8 +54,8 @@ public class AuthController(AppDbContext context, UserService userService) : Con
   }
 
   [Authorize]
-  [HttpGet("protected")]
-  public IActionResult Protected()
+  [HttpGet("validate")]
+  public IActionResult Validate()
   {
     var user = User.FindFirst(ClaimTypes.Name);
     return Ok($"Bạn đang đăng nhập dưới tài khoản: {user}");

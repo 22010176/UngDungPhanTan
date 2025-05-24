@@ -1,27 +1,36 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Card, Checkbox, message, Divider } from 'antd';
-import { UserOutlined, LockOutlined, GoogleOutlined, FacebookOutlined } from '@ant-design/icons';
-import { Link } from 'react-router';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Input, message } from 'antd';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 
-const LoginForm = () => {
+import { Login } from '@/api/authApi';
+import withContext from '@/hoc/withContext';
+import { Context, initialValues, reducer } from './context';
+import withNoAuth from '@/hoc/withNoAuth';
+
+const Page = () => {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
     setLoading(true);
-
+    console.log(values)
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
+      const result = await Login({ mail: values.mail, password: values.password })
+      console.log(result)
+      localStorage.setItem("token", result.token)
       message.success('Đăng nhập thành công!');
-      console.log('Login values:', values);
+
+      setTimeout(function () {
+        navigate("/file-manager")
+      }, 2000)
+
     } catch (error) {
       message.error('Đăng nhập thất bại!');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSocialLogin = (provider) => {
-    message.info(`Đăng nhập bằng ${provider}...`);
   };
 
   return (
@@ -35,21 +44,11 @@ const LoginForm = () => {
           <p className="text-gray-500 mt-2">Chào mừng bạn quay trở lại</p>
         </div>
 
-        <Form
-          name="login"
-          onFinish={onFinish}
-          layout="vertical"
-          size="large"
-          initialValues={{ remember: true }}
-        >
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[
-              { required: true, message: 'Vui lòng nhập email!' },
-              { type: 'email', message: 'Email không hợp lệ!' }
-            ]}
-          >
+        <Form name="login" onFinish={onFinish} layout="vertical" size="large" initialValues={{ remember: true }}>
+          <Form.Item name="mail" label="Email" rules={[
+            { required: true, message: 'Vui lòng nhập email!' },
+            // { type: 'email', message: 'Email không hợp lệ!' }
+          ]}>
             <Input prefix={<UserOutlined className="text-gray-400" />} placeholder="Nhập email của bạn" className="h-12" />
           </Form.Item>
 
@@ -79,4 +78,5 @@ const LoginForm = () => {
   );
 };
 
+const LoginForm = withNoAuth(withContext(Page, Context, initialValues, reducer))
 export default LoginForm;

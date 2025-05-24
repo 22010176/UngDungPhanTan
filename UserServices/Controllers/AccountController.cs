@@ -12,12 +12,11 @@ namespace UserServices.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(AppDbContext context, UserService userService, Storage.StorageClient storageClient, ILoggerFactory logger) : ControllerBase
+public class UserController(AppDbContext context, UserService userService, Storage.StorageClient storageClient) : ControllerBase
 {
   readonly AppDbContext _context = context;
   readonly UserService _userService = userService;
   readonly Storage.StorageClient _storageClient = storageClient;
-  readonly ILoggerFactory _logger = logger;
 
   [Authorize]
   [HttpGet]
@@ -38,8 +37,10 @@ public class UserController(AppDbContext context, UserService userService, Stora
   {
     User user = new()
     {
+      FirstName = input.FirstName,
+      LastName = input.LastName,
       Email = input.Email,
-      MatKhau = _userService.HashPassword(input.MatKhau),
+      HashedPassword = _userService.HashPassword(input.Password),
       Root = Guid.NewGuid().ToString()
     };
     await _context.Users.AddAsync(user);
@@ -49,7 +50,6 @@ public class UserController(AppDbContext context, UserService userService, Stora
     var reply = await _storageClient.InitUserStorageAsync(new InitUserStorageRequest { BucketId = user.Root });
 
     Console.WriteLine(reply.Status);
-
 
     return Ok(_context.Users.Where(u => u.Email == input.Email).FirstOrDefault());
   }

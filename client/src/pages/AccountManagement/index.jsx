@@ -1,17 +1,14 @@
-import { EditOutlined, SaveOutlined, SearchOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Col, Flex, Input, Layout, Progress, Row, Space, Upload, message } from 'antd';
+import { EditOutlined, SaveOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Col, Input, Layout, Row, Space, Upload, message } from 'antd';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
+
+import withContext from '@/hoc/withContext';
+import { Context, initialValues, reducer } from './context';
 
 const { Header, Content } = Layout;
 
-export default function AccountManagement() {
-  const navigate = useNavigate()
-  const [editing, setEditing] = useState(false);
-  const totalStorage = 100; // GB
-  const usedStorage = 68.5; // GB
-  const storagePercent = (usedStorage / totalStorage) * 100;
-
+function Page() {
   const [userInfo, setUserInfo] = useState({
     name: 'Nguyen Van A',
     email: 'nguyenvana@example.com',
@@ -20,14 +17,11 @@ export default function AccountManagement() {
     avatar: null
   });
 
+  const navigate = useNavigate()
+  const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState(userInfo);
-
-  const [settings, setSettings] = useState({
-    notifications: true,
-    emailUpdates: false,
-    twoFactor: true,
-    language: 'vi'
-  });
+  const totalStorage = 100; // GB
+  const usedStorage = 68.5; // GB
 
   const handleSave = () => {
     if (!formData.name || !formData.email) {
@@ -144,3 +138,6 @@ export default function AccountManagement() {
     </Content>
   );
 }
+
+const AccountManagement = withContext(Page, Context, initialValues, reducer)
+export default AccountManagement;
