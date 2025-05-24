@@ -10,13 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@tailwindcss/vite": "^4.1.7",
     "antd": "^5.25.2",
     "antd-style": "^3.7.1",
     "axios": "^1.9.0",
     "dayjs": "^1.11.13",
+    "install": "^0.13.0",
+    "npm": "^11.4.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-router": "^7.6.0",
     "tailwindcss": "^4.1.7"
   },
   "devDependencies": {

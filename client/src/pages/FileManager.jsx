@@ -29,24 +29,24 @@ export default function FileManager() {
     { key: '3', name: 'Images', type: 'folder', size: '-', modified: '2024-01-13' },
     { key: '4', name: 'presentation.pptx', type: 'file', size: '5.1 MB', modified: '2024-01-12' },
     { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
-    { key: '5', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '6', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '7', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '8', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '9', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '10', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '11', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '12', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '13', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '14', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '15', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '16', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '17', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '18', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '19', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '20', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '21', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '22', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
+    { key: '23', name: 'data.xlsx', type: 'file', size: '856 KB', modified: '2024-01-11' },
   ]);
 
   const [filteredFiles, setFilteredFiles] = useState(files);
@@ -164,30 +164,10 @@ export default function FileManager() {
       key: 'actions',
       render: (_, record) => (
         <Space>
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() => handleEdit(record)}
-          />
-          <Button
-            type="text"
-            icon={<DownloadOutlined />}
-            size="small"
-            disabled={record.type === 'folder'}
-          />
-          <Popconfirm
-            title="Delete this item?"
-            onConfirm={() => handleDelete(record.key)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button
-              type="text"
-              icon={<DeleteOutlined />}
-              size="small"
-              danger
-            />
+          <Button type="text" icon={<EditOutlined />} size="small" onClick={() => handleEdit(record)} />
+          <Button type="text" icon={<DownloadOutlined />} size="small" disabled={record.type === 'folder'} />
+          <Popconfirm title="Delete this item?" onConfirm={() => handleDelete(record.key)} okText="Yes" cancelText="No">
+            <Button type="text" icon={<DeleteOutlined />} size="small" danger />
           </Popconfirm>
         </Space>
       )
@@ -195,85 +175,46 @@ export default function FileManager() {
   ];
   const { styles } = useStyle();
   return (
-    <Layout className="h-screen bg-gray-50 flex flex-col">
-      <Header className="bg-white shadow-sm border-b">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-8">
-            <h1 className="text-xl font-semibold text-gray-800">File Manager</h1>
-            <nav className="flex space-x-6">
-              <Button type="text" className="text-gray-600 hover:text-blue-600">
-                Profile
+    <>
+      <Content className="p-6 overflow-hidden">
+        <div className="p-4 flex items-center justify-between flex-shrink-0">
+          <Space>
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleNewFolder}>
+              New Folder
+            </Button>
+            <Upload {...uploadProps}>
+              <Button icon={<UploadOutlined />}>
+                Upload File
               </Button>
-              <Button type="text" className="text-gray-600 hover:text-blue-600">
-                Account Settings
-              </Button>
-              <Button type="text" className="text-gray-600 hover:text-blue-600">
-                Privacy
-              </Button>
-              <Button type="text" className="text-gray-600 hover:text-blue-600">
-                Preferences
-              </Button>
-            </nav>
-          </div>
+            </Upload>
+          </Space>
+
+          <Search placeholder="Search files..." onSearch={handleSearch} onChange={(e) => handleSearch(e.target.value)} style={{ width: 250 }} prefix={<SearchOutlined />} />
         </div>
-      </Header>
 
-      <Content className="p-6 flex-1 overflow-hidden">
-        <Row gutter={16} className="h-full">
+        <Row className="h-full">
           <Col span={selectedFile ? 16 : 24} className="h-full">
-            <div className="bg-white rounded-lg shadow-sm h-full flex flex-col">
-              <div className="p-4 border-b flex items-center justify-between flex-shrink-0">
-                <Space>
-                  <Button type="primary" icon={<PlusOutlined />} onClick={handleNewFolder}>
-                    New Folder
-                  </Button>
-                  <Upload {...uploadProps}>
-                    <Button icon={<UploadOutlined />}>
-                      Upload File
-                    </Button>
-                  </Upload>
-                </Space>
-
-                <Search placeholder="Search files..." onSearch={handleSearch} onChange={(e) => handleSearch(e.target.value)} style={{ width: 250 }} prefix={<SearchOutlined />} />
-              </div>
-
-              <div className="overflow-auto">
-                <Table
-                  columns={columns}
-                  dataSource={filteredFiles}
-                  pagination={false}
-                  className={[styles, "m-5"].join(" ")}
-                  rowClassName="hover:bg-gray-50 cursor-pointer"
-                  onRow={(record) => ({
-                    onClick: () => setSelectedFile(record),
-                  })}
-                  scroll={{ y: 11 * 50 }}
-                // scroll={{ y: 'calc(100vh - 300px)' }}
-                />
-              </div>
-            </div>
+            <Table size='small' columns={columns} dataSource={filteredFiles}
+              pagination={{ pageSize: 12 }}
+              className={[styles, "m-2"].join(" ")}
+              rowClassName="hover:bg-gray-50 cursor-pointer"
+              onRow={(record) => ({
+                onClick: () => setSelectedFile(record),
+              })}
+            />
           </Col>
 
           {selectedFile && (
             <Col span={8} className="h-full">
-              <Card
-                title={<Space><EyeOutlined />File Details</Space>}
-                className="h-full overflow-auto"
-                extra={
-                  <Button
-                    type="text"
-                    size="small"
-                    onClick={() => setSelectedFile(null)}
-                  >
-                    ×
-                  </Button>
-                }
-              >
+              <Card title={<Space><EyeOutlined />File Details</Space>} className="h-full overflow-auto" extra={
+                <Button type="text" size="small" onClick={() => setSelectedFile(null)}>
+                  ×
+                </Button>
+              }>
                 <div className="text-center mb-4">
                   {selectedFile.type === 'folder' ?
                     <FolderOutlined className="text-6xl text-blue-500" /> :
-                    <FileTextOutlined className="text-6xl text-gray-500" />
-                  }
+                    <FileTextOutlined className="text-6xl text-gray-500" />}
                 </div>
 
                 <Descriptions column={1} size="small">
@@ -297,37 +238,18 @@ export default function FileManager() {
                 </Descriptions>
 
                 <div className="mt-4 space-y-2">
-                  <Button
-                    type="primary"
-                    block
-                    icon={<DownloadOutlined />}
-                    disabled={selectedFile.type === 'folder'}
-                  >
+                  <Button type="primary" block icon={<DownloadOutlined />} disabled={selectedFile.type === 'folder'}>
                     Download
                   </Button>
-                  <Button
-                    block
-                    icon={<EditOutlined />}
-                    onClick={() => handleEdit(selectedFile)}
-                  >
+                  <Button block icon={<EditOutlined />} onClick={() => handleEdit(selectedFile)}>
                     Rename
                   </Button>
-                  <Popconfirm
-                    title="Delete this item?"
+                  <Popconfirm title="Delete this item?" okText="Yes" cancelText="No"
                     onConfirm={() => {
                       handleDelete(selectedFile.key);
                       setSelectedFile(null);
-                    }}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <Button
-                      block
-                      danger
-                      icon={<DeleteOutlined />}
-                    >
-                      Delete
-                    </Button>
+                    }}>
+                    <Button block danger icon={<DeleteOutlined />}>Delete</Button>
                   </Popconfirm>
                 </div>
               </Card>
@@ -337,54 +259,38 @@ export default function FileManager() {
       </Content>
 
       {/* Fixed Footer with Storage Info */}
-      <Footer className="bg-white border-t shadow-lg p-4">
-        <Card size="small" className="max-w-screen mx-auto">
-          <div className="flex items-center space-x-4">
-            <DatabaseOutlined className="text-blue-500 text-lg" />
-            <div className="flex-1">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-sm text-gray-600">Storage Usage</span>
-                <span className="text-sm font-medium">{usedStorage} GB / {totalStorage} GB</span>
-              </div>
-              <Progress
-                percent={Math.round(storagePercent)}
-                status={storagePercent > 80 ? 'exception' : 'active'}
-                strokeColor={storagePercent > 80 ? '#ff4d4f' : '#1890ff'}
-                size="small"
-              />
-              <div className="flex justify-between text-xs text-gray-500 mt-1">
-                <span>{(totalStorage - usedStorage).toFixed(1)} GB available</span>
-                <span>{Math.round(storagePercent)}% used</span>
-              </div>
+      {/* <div className="bg-white shadow-lg"> */}
+      <Card size="small" className="w-full ">
+        <div className="flex items-center space-x-5">
+          <DatabaseOutlined className="text-blue-500 text-lg" />
+          <div className="flex-1">
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-sm text-gray-600">Storage Usage</span>
+              <span className="text-sm font-medium">{usedStorage} GB / {totalStorage} GB</span>
             </div>
+            <Progress
+              percent={Math.round(storagePercent)}
+              status={storagePercent > 80 ? 'exception' : 'active'}
+              strokeColor={storagePercent > 80 ? '#ff4d4f' : '#1890ff'}
+              size="small" />
           </div>
-        </Card>
-      </Footer>
+        </div>
+      </Card>
+      {/* </div> */}
 
       <Modal
-        // title="Edit Item"
-        open={isModalVisible}
-        onOk={handleSave}
+        open={isModalVisible} onOk={handleSave} okText="Save"
         onCancel={() => {
           setIsModalVisible(false);
           setEditingFile(null);
-        }}
-        okText="Save"
-      >
+        }}>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-2">Name</label>
             <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Enter name" />
           </div>
-          {/* <div>
-            <label className="block text-sm font-medium mb-2">Type</label>
-            <Select value={editType} onChange={setEditType} className="w-full">
-              <Select.Option value="file">File</Select.Option>
-              <Select.Option value="folder">Folder</Select.Option>
-            </Select>
-          </div> */}
         </div>
       </Modal>
-    </Layout>
+    </>
   );
 }
