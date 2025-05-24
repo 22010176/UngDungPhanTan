@@ -20,7 +20,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path="file-manager" element={<FileManager />} />
+          <Route path="file-manager/*" element={<FileManager />} />
           <Route path="account-management" element={<Component />} />
         </Route>
         <Route path="change-password" element={<ChangePasswordForm />} />

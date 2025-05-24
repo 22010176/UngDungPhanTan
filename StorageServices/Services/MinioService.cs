@@ -65,6 +65,49 @@ public class MinioService
     return await IsBucketExists(client, bucketName);
   }
 
+  public async Task<bool> InsertObject(IFormFile file, string folderName)
+  {
+    string path = folderName + "/" + file.FileName;
+    var stream = file.OpenReadStream();
+    var args = new PutObjectArgs()
+      .WithBucket("test-bucket")
+      .WithObject(path)
+      .WithStreamData(stream)
+      .WithObjectSize(-1)
+      .WithContentType(file.ContentType);
+
+    try
+    {
+      await client.PutObjectAsync(args);
+      await client.StatObjectAsync(new StatObjectArgs()
+        .WithBucket("test-bucket")
+        .WithObject(path));
+
+      return true;
+    }
+    catch (Exception)
+    {
+      return false;
+      throw;
+    }
+  }
+
+  public async Task<bool> DeleteObject(string fileName)
+  {
+    var args = new RemoveObjectArgs()
+      .WithBucket("test-bucket")
+      .WithObject(fileName);
+
+    try { await client.RemoveObjectAsync(args); }
+    catch (Exception)
+    {
+      return false;
+      throw;
+    }
+
+    return true;
+  }
+
   public async Task<bool> CreateFolder(string folderName)
   {
     string path = folderName[^1] == '/' ? folderName : folderName + "/";
@@ -76,7 +119,7 @@ public class MinioService
         .WithBucket("test-bucket")
         .WithObject(PathUtils.FixFolderPath(path))
         .WithStreamData(emptyStream)
-        .WithObjectSize(emptyStream.Length)
+        .WithObjectSize(-1)
         .WithContentType("application/x-directory"));
     }
     catch (Exception)

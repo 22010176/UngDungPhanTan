@@ -15,6 +15,7 @@ export function reducer(state, action) {
   switch (type) {
     case "updateFileList":
       _state.files = payload
+      _state.selectedFile = null
       break
     case "updateSelectedFile":
       _state.selectedFile = payload

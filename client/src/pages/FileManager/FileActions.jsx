@@ -1,12 +1,19 @@
-import { CalendarOutlined, DatabaseOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, FileOutlined, FileTextOutlined, FolderOutlined, PlusOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Descriptions, Input, Layout, message, Modal, Popconfirm, Progress, Row, Space, Table, Tag, Upload } from 'antd';
-import { createStyles } from 'antd-style';
-import { useState } from 'react';
+import { PlusOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Input, Layout, Space, Upload } from 'antd';
+import { useContext } from 'react';
+import { useParams } from 'react-router';
+
+import { GetFileList, UploadFile } from '@/api/storageApi';
+import { Context } from './context';
+import { UpdateFileList } from './utills';
 
 const { Header, Content, Footer } = Layout;
 const { Search } = Input;
 
 function FileActions() {
+  let { "*": path } = useParams();
+  const [, dispatch] = useContext(Context)
+  console.log(path)
   const handleNewFolder = () => {
     // const newFolder = {
     //   key: Date.now().toString(),
@@ -22,7 +29,15 @@ function FileActions() {
   };
 
   const uploadProps = {
-    beforeUpload: (file) => {
+    beforeUpload: async (file) => {
+      console.log(file)
+      console.log(path)
+      await UploadFile(file, path);
+
+      const result = await GetFileList(path)
+      console.log(result)
+      UpdateFileList(dispatch, path)
+
       // const newFile = {
       //   key: Date.now().toString(),
       //   name: file.name,
@@ -34,7 +49,7 @@ function FileActions() {
       // setFiles(newFiles);
       // setFilteredFiles(newFiles);
       // message.success('File uploaded successfully');
-      // return false;
+      return false;
     },
     showUploadList: false
   };

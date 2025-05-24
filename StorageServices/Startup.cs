@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StorageServices.Services;
@@ -74,7 +75,10 @@ public class Startup(IConfiguration configuration)
     services.AddControllers();
     services.AddGrpc().AddJsonTranscoding();
     services.AddScoped<MinioService>();
-
+    services.Configure<FormOptions>(options =>
+    {
+      options.MultipartBodyLengthLimit = int.MaxValue;
+    });
     InitSwagger(services);
     InitAuthenticate(services);
   }
