@@ -15,6 +15,7 @@ function FileActions() {
   const [, dispatch] = useContext(Context)
   console.log(path)
   const handleNewFolder = () => {
+    dispatch({ type: "openForm", payload: "newFolder" })
     // const newFolder = {
     //   key: Date.now().toString(),
     //   name: 'New Folder',
@@ -30,36 +31,21 @@ function FileActions() {
 
   const uploadProps = {
     beforeUpload: async (file) => {
-      console.log(file)
-      console.log(path)
       await UploadFile(file, path);
-
-      const result = await GetFileList(path)
-      console.log(result)
+      await GetFileList(path)
       UpdateFileList(dispatch, path)
 
-      // const newFile = {
-      //   key: Date.now().toString(),
-      //   name: file.name,
-      //   type: 'file',
-      //   size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
-      //   modified: new Date().toISOString().split('T')[0]
-      // };
-      // const newFiles = [...files, newFile];
-      // setFiles(newFiles);
-      // setFilteredFiles(newFiles);
-      // message.success('File uploaded successfully');
       return false;
     },
     showUploadList: false
   };
 
-  const handleSearch = (value) => {
-    // const filtered = files.filter(file =>
-    //   file.name.toLowerCase().includes(value.toLowerCase())
-    // );
-    // setFilteredFiles(filtered);
-  };
+  // const handleSearch = (value) => {
+  // const filtered = files.filter(file =>
+  //   file.name.toLowerCase().includes(value.toLowerCase())
+  // );
+  // setFilteredFiles(filtered);
+  // };
   return (
     <>
       <Space>
@@ -71,7 +57,7 @@ function FileActions() {
         </Upload>
       </Space>
 
-      <Search placeholder="Search files..." onSearch={handleSearch} onChange={(e) => handleSearch(e.target.value)} style={{ width: 250 }} prefix={<SearchOutlined />} />
+      {/* <Search placeholder="Search files..." onSearch={handleSearch} onChange={(e) => handleSearch(e.target.value)} style={{ width: 250 }} prefix={<SearchOutlined />} /> */}
     </>
   )
 }

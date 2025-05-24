@@ -35,9 +35,11 @@ function Page() {
 
       <FileQuota />
 
-      <Modal open={false} okText="Save"
+      <Modal open={state.openForm} okText="Save"
         onOk={handleSave}
-        onCancel={() => { }}>
+        onCancel={() => {
+          dispatch({ type: "closeForm" })
+        }}>
         <ReNameForm />
       </Modal>
     </>

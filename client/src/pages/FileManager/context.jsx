@@ -4,7 +4,8 @@ export const Context = createContext()
 
 export const initialValues = {
   files: [],
-  selectedFile: null
+  selectedFile: null,
+  openForm: false
 }
 
 export function reducer(state, action) {
@@ -20,6 +21,13 @@ export function reducer(state, action) {
     case "updateSelectedFile":
       _state.selectedFile = payload
       break
+    case "openForm":
+      _state.openForm = true
+      break
+    case "closeForm":
+      _state.openForm = false
+      break
+
     default:
       break
   }

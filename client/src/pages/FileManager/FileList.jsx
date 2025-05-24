@@ -59,7 +59,9 @@ function FileList() {
         if (record.key == "../") return ""
         return (
           <Space>
-            <Button type="text" icon={<EditOutlined />} size="small" onClick={() => handleEdit(record)} />
+            <Button type="text" icon={<EditOutlined />} size="small" onClick={e => {
+              e.stopPropagation()
+            }} />
             <Button type="text" icon={<DownloadOutlined />} size="small" disabled={record.type === 'folder'} />
             <Popconfirm title="Delete this item?"
               onConfirm={async e => {
@@ -74,8 +76,6 @@ function FileList() {
       }
     }
   ];
-
-
 
   useEffect(function () {
     UpdateFileList(dispatch, path)

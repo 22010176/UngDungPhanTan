@@ -4,8 +4,6 @@ import { Button, Card, Descriptions, Popconfirm, Space, Tag } from 'antd';
 import { useContext } from "react";
 import { Context } from './context';
 
-
-
 function FileDetails() {
   const [state, dispatch] = useContext(Context)
   const selectedFile = state.selectedFile
@@ -13,7 +11,7 @@ function FileDetails() {
   const handleDelete = (key) => {
 
   };
-  const handleEdit = (record) => {
+  const handleEdit = key => {
 
   };
 
@@ -53,7 +51,10 @@ function FileDetails() {
         <Button type="primary" block icon={<DownloadOutlined />} disabled={selectedFile.type === 'folder'}>
           Download
         </Button>
-        <Button block icon={<EditOutlined />} onClick={() => handleEdit(selectedFile)}>
+        <Button block icon={<EditOutlined />} onClick={e => {
+          e.stopPropagation()
+          handleEdit(selectedFile.key)
+        }}>
           Rename
         </Button>
         <Popconfirm title="Delete this item?" okText="Yes" cancelText="No"
@@ -61,7 +62,7 @@ function FileDetails() {
             handleDelete(selectedFile.key);
             dispatch({ type: "updateSelectedFile", payload: null })
           }}>
-          <Button block danger icon={<DeleteOutlined />}>Delete</Button>
+          <Button block danger icon={<DeleteOutlined />} onClick={e => e.stopPropagation()}>Delete</Button>
         </Popconfirm>
       </div>
     </Card>
