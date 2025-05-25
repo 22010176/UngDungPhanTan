@@ -1,8 +1,9 @@
-import { FormatFileSize, FormatModifiedDate, GetFileName, IsDir } from '@/utils/fileUtils';
 import { CalendarOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, FileTextOutlined, FolderOutlined } from '@ant-design/icons';
 import { Button, Card, Descriptions, Popconfirm, Space, Tag } from 'antd';
 import { useContext } from "react";
+
 import { Context } from './context';
+import { FormatFileSize, FormatModifiedDate, GetFileName, IsDir } from '@/utils/fileUtils';
 
 function FileDetails() {
   const [state, dispatch] = useContext(Context)

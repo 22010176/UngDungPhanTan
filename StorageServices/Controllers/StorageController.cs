@@ -11,7 +11,7 @@ namespace StorageServices.Controllers;
 public class StorageController(MinioService minioService) : ControllerBase
 {
   readonly MinioService _minioService = minioService;
-
+  readonly ulong MaxSize = 5L * 1024L * 1024L * 1024L;
   [HttpGet]
   [Authorize]
   public async Task<ActionResult<ICollection>> GetFiles()
@@ -44,7 +44,7 @@ public class StorageController(MinioService minioService) : ControllerBase
 
     bool result = await _minioService.InsertObject(form.File, form.Path == "." ? root : string.Join("/", [root, form.Path]));
 
-    // if (!result) return BadRequest();
+    if (!result) return BadRequest();
     return Ok();
   }
 
@@ -61,6 +61,22 @@ public class StorageController(MinioService minioService) : ControllerBase
     if (!result) return BadRequest();
     return Ok(path);
   }
+
+  [HttpGet("quota")]
+  [Authorize]
+  public async Task<ActionResult> GetSizeUsed()
+  {
+    var root = User.FindFirst("Root")?.Value;
+    if (string.IsNullOrEmpty(root)) return Unauthorized();
+    ulong result = await _minioService.GetFileSize(root);
+
+    return Ok(new
+    {
+      Current = result,
+      TotalSize = MaxSize
+    });
+  }
+
 }
 
 public class FileInputForm

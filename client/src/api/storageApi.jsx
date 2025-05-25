@@ -2,6 +2,7 @@ import axios from "axios";
 
 const storageService = 'http://localhost:5001/Storage'
 
+
 export async function GetFileList(path = "") {
   const token = localStorage.getItem('token')
   const res = await axios.get([storageService, path].join('/'), {
@@ -37,6 +38,19 @@ export async function DeleteFile(path) {
   const res = await axios.delete(storageService, {
     params: { path },
     headers: { Authorization: `Bearer ${token}`, }
+  })
+  return res.data
+}
+
+export async function RenameFile(file = "", path = "") {
+  const token = localStorage.getItem('token');
+
+}
+
+export async function GetQuota() {
+  const token = localStorage.getItem('token')
+  const res = await axios.get(storageService + "/quota", {
+    headers: { Authorization: `Bearer ${token}` }
   })
   return res.data
 }

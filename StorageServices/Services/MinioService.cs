@@ -1,12 +1,14 @@
 using Minio;
 using Minio.DataModel;
 using Minio.DataModel.Args;
+using Minio.DataModel.Tags;
 using StorageServices.Utils;
 
 namespace StorageServices.Services;
 
 public class MinioService
 {
+  readonly string secret = "__SuperSecretValue";
   public static IMinioClient CreateClient(string endpoint, string accessKey, string secretKey, bool useSSL)
   {
     var client = new MinioClient()
@@ -110,23 +112,15 @@ public class MinioService
 
   public async Task<bool> CreateFolder(string folderName)
   {
-    string path = folderName[^1] == '/' ? folderName : folderName + "/";
-
-    try
-    {
-      var emptyStream = new MemoryStream([0]);
-      await client.PutObjectAsync(new PutObjectArgs()
-        .WithBucket("test-bucket")
-        .WithObject(PathUtils.FixFolderPath(path))
-        .WithStreamData(emptyStream)
-        .WithObjectSize(-1)
-        .WithContentType("application/x-directory"));
-    }
-    catch (Exception)
-    {
-      return false;
-      throw;
-    }
+    string path = PathUtils.FixFolderPath(folderName);
+    var emptyStream = new MemoryStream([0]);
+    Console.WriteLine(path + secret);
+    await client.PutObjectAsync(new PutObjectArgs()
+      .WithBucket("test-bucket")
+      .WithObject(path + secret)
+      .WithStreamData(emptyStream)
+      .WithObjectSize(1)
+      .WithContentType("application/x-directory"));
 
     return true;
   }
@@ -140,8 +134,26 @@ public class MinioService
 
     List<Item> items = [];
     await foreach (var item in client.ListObjectsEnumAsync(args).ConfigureAwait(false))
-      items.Add(item);
+    {
+      if (!item.Key.Contains(secret)) items.Add(item);
+    }
 
     return items;
+  }
+
+  public async Task<ulong> GetFileSize(string path)
+  {
+    var args = new ListObjectsArgs()
+      .WithBucket("test-bucket")
+      .WithPrefix(PathUtils.FixFolderPath(path))
+      .WithRecursive(true)
+      .WithVersions(false);
+
+    ulong size = 0;
+    await foreach (var item in client.ListObjectsEnumAsync(args).ConfigureAwait(false))
+    {
+      if (!item.Key.Contains(secret)) size += item.Size;
+    }
+    return size;
   }
 }

@@ -1,12 +1,18 @@
 import { Input } from "antd";
-import { useState } from "react";
+import { useContext } from "react";
+
+import { Context } from "./context";
 
 function ReNameForm() {
-  const [editName, setEditName] = useState('');
+  const [state, dispatch] = useContext(Context)
+
   return (
     <div className="space-y-4">
       <label className="block text-sm font-medium mb-2">Name</label>
-      <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Enter name" />
+      <Input
+        placeholder="Enter name"
+        value={state.fileName}
+        onChange={(e) => dispatch({ type: "updateFileForm", payload: e.target.value })} />
     </div>
   )
 }

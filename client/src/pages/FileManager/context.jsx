@@ -5,13 +5,13 @@ export const Context = createContext()
 export const initialValues = {
   files: [],
   selectedFile: null,
-  openForm: false
+  openForm: "", // newFolder | newFile
+  fileName: ""
 }
 
 export function reducer(state, action) {
   const _state = { ...state }
   const { type, payload } = action
-  console.log({ type, payload })
 
   switch (type) {
     case "updateFileList":
@@ -21,11 +21,11 @@ export function reducer(state, action) {
     case "updateSelectedFile":
       _state.selectedFile = payload
       break
-    case "openForm":
-      _state.openForm = true
+    case "updateForm":
+      _state.openForm = action.payload
       break
-    case "closeForm":
-      _state.openForm = false
+    case "updateFileForm":
+      _state.fileName = payload
       break
 
     default:

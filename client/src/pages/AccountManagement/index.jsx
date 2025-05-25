@@ -1,5 +1,5 @@
-import { EditOutlined, SaveOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Col, Input, Layout, Row, Space, Upload, message } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Col, Input, Layout, Row, Space, message } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -52,13 +52,13 @@ function Page() {
             <Col span={6}>
               <div className="text-center">
                 <Avatar size={120} src={userInfo.avatar} icon={<UserOutlined />} />
-                <div className="mt-3">
+                {/* <div className="mt-3">
                   <Upload beforeUpload={handleUpload} showUploadList={false}>
                     <Button icon={<UploadOutlined />} size="small">
                       Change picture
                     </Button>
                   </Upload>
-                </div>
+                </div> */}
               </div>
             </Col>
 
@@ -67,20 +67,20 @@ function Page() {
                 <Row gutter={16}>
                   <Col span={12}>
                     <label className="block text-sm font-medium mb-2">Fullname</label>
-                    <Space.Compact>
-                      <Input
-                        placeholder='firstname'
-                        value={editing ? formData.name : userInfo.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        disabled={!editing}
-                      />
-                      <Input
+                    {/* <Space.Compact> */}
+                    <Input
+                      placeholder='firstname'
+                      value={editing ? formData.name : userInfo.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      disabled={!editing}
+                    />
+                    {/* <Input
                         placeholder='lastname'
                         value={editing ? formData.name : userInfo.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         disabled={!editing}
-                      />
-                    </Space.Compact>
+                      /> */}
+                    {/* </Space.Compact> */}
                   </Col>
                   <Col span={12}>
                     <label className="block text-sm font-medium mb-2">Email</label>
@@ -103,7 +103,7 @@ function Page() {
                 </Row>
               </div>
 
-              <Space className="mt-6">
+              {/* <Space className="mt-6">
                 {editing ? <>
                   <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
                     Lưu
@@ -119,7 +119,7 @@ function Page() {
                     Change password
                   </Button>
                 </>}
-              </Space>
+              </Space> */}
             </Col>
           </Row>
         </Card>
@@ -127,7 +127,10 @@ function Page() {
         {/* Danger Zone */}
         <Card title="Danger Area" className="border-red-200">
           <Space>
-            <Button danger>Logout</Button>
+            <Button danger onClick={() => {
+              localStorage.clear()
+              navigate('/')
+            }}>Logout</Button>
             <Button danger>Delete account</Button>
           </Space>
           <p className="text-sm text-gray-500 mt-2">

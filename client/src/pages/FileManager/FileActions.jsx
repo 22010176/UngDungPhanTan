@@ -13,20 +13,9 @@ const { Search } = Input;
 function FileActions() {
   let { "*": path } = useParams();
   const [, dispatch] = useContext(Context)
-  console.log(path)
+
   const handleNewFolder = () => {
-    dispatch({ type: "openForm", payload: "newFolder" })
-    // const newFolder = {
-    //   key: Date.now().toString(),
-    //   name: 'New Folder',
-    //   type: 'folder',
-    //   size: '-',
-    //   modified: new Date().toISOString().split('T')[0]
-    // };
-    // const newFiles = [...files, newFolder];
-    // setFiles(newFiles);
-    // setFilteredFiles(newFiles);
-    // message.success('New folder created');
+    dispatch({ type: "updateForm", payload: "newFolder" })
   };
 
   const uploadProps = {
