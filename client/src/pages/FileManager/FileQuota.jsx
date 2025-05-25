@@ -1,8 +1,9 @@
-import { GetQuota } from '@/api/storageApi';
-import { FormatFileSize } from '@/utils/fileUtils';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
 import { useEffect, useState } from 'react';
+
+import { GetQuota } from '@/api/storageApi';
+import { FormatFileSize } from '@/utils/fileUtils';
 
 function FileQuota() {
   const [info, setInfo] = useState({ current: 0, totalSize: 100 })

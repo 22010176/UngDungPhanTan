@@ -1,7 +1,8 @@
 using Minio;
+using Minio.ApiEndpoints;
 using Minio.DataModel;
 using Minio.DataModel.Args;
-using Minio.DataModel.Tags;
+
 using StorageServices.Utils;
 
 namespace StorageServices.Services;
@@ -155,5 +156,59 @@ public class MinioService
       if (!item.Key.Contains(secret)) size += item.Size;
     }
     return size;
+  }
+
+  public async Task<bool> RenameFile(string OldPath, string NewPath)
+  {
+    Console.WriteLine($"Test {OldPath} {NewPath}");
+
+    var copySource = new CopySourceObjectArgs()
+      .WithBucket("test-bucket")
+      .WithObject(OldPath);
+
+    var destSource = new CopyObjectArgs()
+      .WithBucket("test-bucket")
+      .WithObject(NewPath)
+      .WithCopyObjectSource(copySource);
+
+    await client.CopyObjectAsync(destSource).ConfigureAwait(false);
+    await DeleteObject(OldPath);
+
+    return true;
+  }
+
+  public async Task<bool> DeleteFolder(string path)
+  {
+
+    Console.WriteLine($"Test {path}");
+    var args = new ListObjectsArgs()
+      .WithBucket("test-bucket")
+      .WithPrefix(PathUtils.FixFolderPath(path))
+      .WithRecursive(true)
+      .WithVersions(false);
+
+    Console.WriteLine("\n\n");
+    List<string> files = [];
+    await foreach (var item in client.ListObjectsEnumAsync(args).ConfigureAwait(false))
+    {
+      // if (item.IsDir) continue;
+      files.Add(item.Key);
+    }
+
+    // Console.WriteLine(string.Join('\n', files));
+
+
+    // if (files.Count == 0) return true;
+    foreach (var batch in files.Chunk(1000))
+    {
+      var delArgs = new RemoveObjectsArgs()
+        .WithBucket("test-bucket")
+        .WithObjects(batch);
+      var result = await client.RemoveObjectsAsync(delArgs);
+      foreach (var error in result)
+        Console.WriteLine($"Error deleting {error.Key}: {error.Message}");
+    }
+
+    return true;
   }
 }

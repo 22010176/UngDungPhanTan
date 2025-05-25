@@ -54,3 +54,14 @@ export async function GetQuota() {
   })
   return res.data
 }
+
+export async function UpdateFile(oldPath, newPath) {
+  const token = localStorage.getItem('token')
+  const res = await axios.put(storageService, { oldPath, newPath }, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': "application/json"
+    }
+  })
+  return res.data
+}

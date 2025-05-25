@@ -8,6 +8,7 @@ import { DeleteFile, GetFileList } from '@/api/storageApi';
 import { FormatFileSize, FormatModifiedDate, GetFileName, IsDir } from '@/utils/fileUtils';
 import { Context } from './context';
 import { UpdateFileList } from './utills';
+import { DeleteFolder } from '@/api/directoryApi';
 
 
 
@@ -53,7 +54,7 @@ function FileList() {
       }
     },
     { title: 'Size', dataIndex: 'size', key: 'size', render: (_, entry) => IsDir(entry.key) ? "" : FormatFileSize(_) },
-    { title: 'Modified', dataIndex: 'lastModified', key: 'lastModified', render: (date, entry) => entry.key == "../" ? "" : FormatModifiedDate(date) },
+    { title: 'Modified', dataIndex: 'lastModified', key: 'lastModified', render: (date, entry) => IsDir(entry.key) ? "" : FormatModifiedDate(date) },
     {
       title: 'Actions', key: 'actions', render: (_, record) => {
         if (record.key == "../") return ""
@@ -61,12 +62,20 @@ function FileList() {
           <Space>
             <Button type="text" icon={<EditOutlined />} size="small" onClick={e => {
               e.stopPropagation()
+              const fileName = GetFileName(record.key)
+              dispatch([
+                { type: "updateForm", payload: "editFile" },
+                { type: "updateFileForm", payload: fileName },
+                { type: "updateFileEdit", payload: fileName }
+              ])
             }} />
-            <Button type="text" icon={<DownloadOutlined />} size="small" disabled={record.type === 'folder'} />
             <Popconfirm title="Delete this item?"
               onConfirm={async e => {
                 e.stopPropagation()
-                await DeleteFile(record.key)
+
+                if (!IsDir(record.key)) await DeleteFile(record.key)
+                else await DeleteFolder(record.key)
+
                 UpdateFileList(dispatch, path)
               }} okText="Yes" cancelText="No">
               <Button type="text" icon={<DeleteOutlined />} size="small" danger onClick={e => e.stopPropagation()} />
@@ -88,7 +97,10 @@ function FileList() {
       rowClassName="hover:bg-gray-50 cursor-pointer"
       onRow={record => ({
         onClick: () => {
-          if (!IsDir(record.key)) return dispatch({ type: "updateSelectedFile", payload: record })
+          if (!IsDir(record.key)) {
+            dispatch({ type: "updateSelectedFile", payload: record })
+            return
+          }
 
           navigate(`./${GetFileName(record.key)}`)
         },

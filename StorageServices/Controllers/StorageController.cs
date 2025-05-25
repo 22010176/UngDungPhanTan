@@ -77,6 +77,19 @@ public class StorageController(MinioService minioService) : ControllerBase
     });
   }
 
+  [HttpPut]
+  [Authorize]
+  public async Task<ActionResult> UpdateFile(UpdateFileInput fileInput)
+  {
+    var root = User.FindFirst("Root")?.Value;
+    if (string.IsNullOrEmpty(root)) return Unauthorized();
+
+    await _minioService.RenameFile(
+      string.Join("/", [root, fileInput.OldPath]),
+      string.Join("/", [root, fileInput.NewPath]));
+    return Ok(fileInput);
+  }
+
 }
 
 public class FileInputForm
@@ -86,4 +99,10 @@ public class FileInputForm
 
   [FromForm(Name = "path")]
   public string Path { get; set; } = null!;
+}
+
+public class UpdateFileInput
+{
+  public string OldPath { get; set; } = null!;
+  public string NewPath { get; set; } = null!;
 }

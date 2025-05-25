@@ -5,31 +5,36 @@ export const Context = createContext()
 export const initialValues = {
   files: [],
   selectedFile: null,
-  openForm: "", // newFolder | newFile
-  fileName: ""
+  openForm: "", // newFolder | editFile
+  fileName: "",
+  oldFileName: ""
 }
 
 export function reducer(state, action) {
   const _state = { ...state }
-  const { type, payload } = action
 
-  switch (type) {
-    case "updateFileList":
-      _state.files = payload
-      _state.selectedFile = null
-      break
-    case "updateSelectedFile":
-      _state.selectedFile = payload
-      break
-    case "updateForm":
-      _state.openForm = action.payload
-      break
-    case "updateFileForm":
-      _state.fileName = payload
-      break
+  const actions = Array.isArray(action) ? action : [action]
+  for (const a of actions) {
+    const { type, payload } = a
 
-    default:
-      break
+    switch (type) {
+      case "updateFileList":
+        _state.files = payload
+        _state.selectedFile = null
+        break
+      case "updateSelectedFile":
+        _state.selectedFile = payload
+        break
+      case "updateForm":
+        _state.openForm = payload
+        break
+      case "updateFileForm":
+        _state.fileName = payload
+        break
+      case "updateFileEdit":
+        _state.oldFileName = payload
+        break;
+    }
   }
 
   return _state

@@ -14,3 +14,17 @@ export async function CreateFolder(path = "") {
 
   return res.data
 }
+
+export async function DeleteFolder(path = "") {
+  if (path == '') return
+
+  console.log(path)
+
+  const token = localStorage.getItem('token')
+  const res = await axios.delete(directoryService, {
+    params: { path },
+    headers: { Authorization: `Bearer ${token}`, }
+  })
+
+  return res.data
+}

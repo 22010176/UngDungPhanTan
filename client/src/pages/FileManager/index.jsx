@@ -3,8 +3,10 @@ import { useContext } from 'react';
 import { useParams } from 'react-router';
 
 import { CreateFolder } from '@/api/directoryApi';
+import { UpdateFile } from '@/api/storageApi';
 import withAuth from '@/hoc/withAuth';
 import withContext from '@/hoc/withContext';
+
 import { Context, initialValues, reducer } from './context';
 import FileActions from './FileActions';
 import FileDetails from './FileDetails';
@@ -14,7 +16,6 @@ import ReNameForm from './ReNameForm';
 import { UpdateFileList } from './utills';
 
 const { Header, Content, Footer } = Layout;
-const { Search } = Input;
 
 function Page() {
   const [state, dispatch] = useContext(Context)
@@ -25,13 +26,19 @@ function Page() {
     switch (openForm) {
       case "newFolder":
         await CreateFolder(`${path}${state.fileName}`)
-        dispatch({ type: "updateFileForm" })
-        UpdateFileList(dispatch, path)
         break;
-
-      default:
-        break;
+      case "editFile": {
+        await UpdateFile(`${path}${state.oldFileName}`, `${path}${state.fileName}`)
+        break
+      }
     }
+
+    UpdateFileList(dispatch, path)
+    dispatch([
+      { type: "updateFileForm", payload: "" },
+      { type: "updateFileEdit", payload: "" },
+      { type: "updateForm" },
+    ])
   };
 
   return (
@@ -51,7 +58,11 @@ function Page() {
 
       <Modal open={state.openForm} okText="Save"
         onOk={handleSave}
-        onCancel={() => dispatch({ type: "updateForm" })}>
+        onCancel={() => dispatch([
+          { type: "updateForm" },
+          { type: "updateFileForm" },
+          { type: "updateFileEdit" },
+        ])}>
         <ReNameForm />
       </Modal>
     </>

@@ -21,9 +21,40 @@ public class DirectoryController(MinioService service) : ControllerBase
     if (!result) return BadRequest();
     return Created();
   }
+
+  [HttpPut]
+  [Authorize]
+  public async Task<ActionResult> RenameFolder(UpdateFolderInput input)
+  {
+    var root = User.FindFirst("Root")?.Value;
+    if (string.IsNullOrEmpty(root)) return Unauthorized();
+
+
+    return Ok(input);
+  }
+
+  [HttpDelete]
+  [Authorize]
+  public async Task<ActionResult> DeleteFolder(string path)
+  {
+    var root = User.FindFirst("Root")?.Value;
+    if (string.IsNullOrEmpty(root)) return Unauthorized();
+
+    string deletePath = path.Contains(root) ? path : string.Join('/', [root, path]);
+    Console.WriteLine(deletePath);
+    await minioService.DeleteFolder(deletePath);
+
+    return Ok(path);
+  }
 }
 
 public class DirectoryInput
 {
   public string Path { get; set; } = null!;
+}
+
+public class UpdateFolderInput
+{
+  public string OldPath { get; set; } = null!;
+  public string NewPath { get; set; } = null!;
 }

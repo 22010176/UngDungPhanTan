@@ -1,9 +1,10 @@
-import { PlusOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Input, Layout, Space, Upload } from 'antd';
 import { useContext } from 'react';
 import { useParams } from 'react-router';
 
 import { GetFileList, UploadFile } from '@/api/storageApi';
+
 import { Context } from './context';
 import { UpdateFileList } from './utills';
 

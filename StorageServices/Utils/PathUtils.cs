@@ -7,6 +7,6 @@ public static class PathUtils
     if (path.Length == 0) return path;
 
     string temp = path.Replace("\\", "/");
-    return temp[^1] == '/' ? temp : temp + '/';
+    return temp.TrimEnd('/') + "/";
   }
 }

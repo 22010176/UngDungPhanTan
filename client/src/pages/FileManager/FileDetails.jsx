@@ -2,14 +2,15 @@ import { CalendarOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, EyeOu
 import { Button, Card, Descriptions, Popconfirm, Space, Tag } from 'antd';
 import { useContext } from "react";
 
-import { Context } from './context';
 import { FormatFileSize, FormatModifiedDate, GetFileName, IsDir } from '@/utils/fileUtils';
+
+import { Context } from './context';
 
 function FileDetails() {
   const [state, dispatch] = useContext(Context)
   const selectedFile = state.selectedFile
 
-  const handleDelete = (key) => {
+  const handleDelete = key => {
 
   };
   const handleEdit = key => {
@@ -52,19 +53,19 @@ function FileDetails() {
         <Button type="primary" block icon={<DownloadOutlined />} disabled={selectedFile.type === 'folder'}>
           Download
         </Button>
-        <Button block icon={<EditOutlined />} onClick={e => {
+        {/* <Button block icon={<EditOutlined />} onClick={e => {
           e.stopPropagation()
           handleEdit(selectedFile.key)
         }}>
           Rename
-        </Button>
-        <Popconfirm title="Delete this item?" okText="Yes" cancelText="No"
+        </Button> */}
+        {/* <Popconfirm title="Delete this item?" okText="Yes" cancelText="No"
           onConfirm={() => {
             handleDelete(selectedFile.key);
             dispatch({ type: "updateSelectedFile", payload: null })
           }}>
           <Button block danger icon={<DeleteOutlined />} onClick={e => e.stopPropagation()}>Delete</Button>
-        </Popconfirm>
+        </Popconfirm> */}
       </div>
     </Card>
   )
