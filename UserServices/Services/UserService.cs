@@ -6,8 +6,7 @@ public class UserService
 {
   private readonly PasswordHasher<object> _passwordHasher = new();
 
-  public string HashPassword(string password) =>
-     _passwordHasher.HashPassword(null, password);
+  public string HashPassword(string password) => _passwordHasher.HashPassword(null, password);
 
   public bool VerifyPassword(string hashedPassword, string providedPassword)
   {

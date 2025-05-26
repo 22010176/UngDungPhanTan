@@ -1,5 +1,6 @@
 import axios from "axios"
 
+// const directoryService = 'http://localhost:3000/storage/Directory'
 const directoryService = 'http://localhost:5001/Directory'
 
 export async function CreateFolder(path = "") {

@@ -1,0 +1,32 @@
+# Build artifacts
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# OS-specific
+*.DS_Store
+*.AppleDouble
+*.Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+.vs/
+
+# Git & source control
+.git/
+.gitignore
+
+# Docker itself
+Dockerfile
+docker-compose.yml
+
+# Secrets
+.env
+*.db
+*.log

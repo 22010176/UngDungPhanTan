@@ -42,7 +42,7 @@ public class Startup(IConfiguration configuration)
           ValidateAudience = false,
           // ValidAudience = "UserService",
           ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("supersecretkey123456".PadRight(256))),
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:JTW_SECRET"]!.PadRight(256))),
           ValidateLifetime = true
         };
       });

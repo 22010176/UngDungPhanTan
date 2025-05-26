@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const accountService = 'http://localhost:5000/User/';
+const accountService = 'http://localhost:3000/auth/User/';
 
 export async function GetUser() {
   const res = await axios.get(accountService);

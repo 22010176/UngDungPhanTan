@@ -1,38 +1,160 @@
-version: "3.8"
-
 services:
-  minio:
-    image: quay.io/minio/minio
-    container_name: minio
+  user-services:
+    container_name: user-service
+    build:
+      context: ./UserServices
+      dockerfile: dockerfile
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - ${USER_SERVICE_PORT}:5000
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Logging__LogLevel__Default: Warning
+      ASPNETCORE_URLS: http://+:5000
+      JWT__JTW_SECRET: supersecretkey123456
+      ConnectionStrings__PostgresConnection: Host=postgres-database;Port=5432;Database=mydb;Username=postgres;Password=admin
+    networks:
+      - database-network
+      - backend-network
+    depends_on:
+      - postgres-database
+      - storage-services
+
+  postgres-database:
+    container_name: postgres-database
+    image: postgres:latest
+    restart: always
+    # ports:
+    #   - 4500:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - database-network
+
+  storage-services:
+    container_name: storage-service
+    build:
+      context: ./StorageServices
+      dockerfile: dockerfile
+    ports:
+      - ${STORAGE_SERVICE_PORT}:5001
+      # - ${STORAGE_SERVICE_GRPC_PORT}:5002
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5001
+      JWT__JTW_SECRET: supersecretkey123456
+      Minio__Endpoint: minio1:9000
+      Minio__AccessKey: minioadmin
+      Minio__SecretKey: minioadmin123
+      Minio__UseSSL: false
+      Minio__DefaultBucket: test-bucket
+    networks:
+      - minio_exposer
+      - backend-network
+    depends_on:
+      - minio1
+
+  minio1:
+    image: quay.io/minio/minio
+    container_name: minio1
+    hostname: minio1
+    volumes:
+      - minio1_data1:/data1
+      - minio1_data2:/data2
+      - minio1_data3:/data3
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin123
-    volumes:
-      - minio-data:/data
-    command: server /data --console-address ":9001"
-
-  rabbitmq:
-    image: rabbitmq:management
-    container_name: rabbitmq
+    command: server http://minio{1...4}/data{1...3} --console-address ":9001"
+    networks:
+      - minio_exposer
+      - minio_distributed
     ports:
-      - "5672:5672"      # Cổng cho ứng dụng giao tiếp
-      - "15672:15672"    # Cổng cho giao diện quản trị web
+      - 9001:9001
+    depends_on:
+      - minio2
+      - minio3
+      - minio4
+
+  minio2:
+    image: quay.io/minio/minio
+    container_name: minio2
+    hostname: minio2
+    volumes:
+      - minio2_data1:/data1
+      - minio2_data2:/data2
+      - minio2_data3:/data3
     environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server http://minio{1...4}/data{1...3} --console-address ":9001"
+    networks:
+      - minio_distributed
 
-  redis:
-    image: redis:alpine
-    container_name: redis
-    ports:
-      - "6379:6379"
+  minio3:
+    image: quay.io/minio/minio
+    container_name: minio3
+    hostname: minio3
     volumes:
-      - redis_data:/data
-    command: ["redis-server", "--appendonly", "yes"]
+      - minio3_data1:/data1
+      - minio3_data2:/data2
+      - minio3_data3:/data3
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server http://minio{1...4}/data{1...3} --console-address ":9001"
+    networks:
+      - minio_distributed
+
+  minio4:
+    image: quay.io/minio/minio
+    container_name: minio4
+    hostname: minio4
+    volumes:
+      - minio4_data1:/data1
+      - minio4_data2:/data2
+      - minio4_data3:/data3
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server http://minio{1...4}/data{1...3} --console-address ":9001"
+    networks:
+      - minio_distributed
 
 volumes:
-  minio-data:
-  redis_data:
+  pgdata:
+
+  minio1_data1:
+  minio1_data2:
+  minio1_data3:
+
+  minio2_data1:
+  minio2_data2:
+  minio2_data3:
+
+  minio3_data1:
+  minio3_data2:
+  minio3_data3:
+  
+  minio4_data1:
+  minio4_data2:
+  minio4_data3:
+
+
+networks:
+  backend-network:
+    driver: bridge
+
+  database-network:
+    driver: bridge
+
+  minio_distributed:
+    driver: bridge
+  
+  minio_exposer:
+    driver: bridge
+
+

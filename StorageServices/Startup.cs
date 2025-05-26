@@ -10,11 +10,13 @@ public class Startup(IConfiguration configuration)
 {
   public IConfiguration Configuration = configuration;
 
-  private static void InitAuthenticate(IServiceCollection services)
+  private void InitAuthenticate(IServiceCollection services)
   {
     services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
+
+      // Console.WriteLine(Environment.GetEnvironmentVariable("JWT__JTW_SECRET"));
       options.TokenValidationParameters = new TokenValidationParameters
       {
         ValidateIssuer = false,
@@ -22,7 +24,7 @@ public class Startup(IConfiguration configuration)
         ValidateAudience = false,
         // ValidAudience = "UserService",
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("supersecretkey123456".PadRight(256))),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:JTW_SECRET"]!.PadRight(256))),
         ValidateLifetime = true
       };
     });
@@ -31,14 +33,14 @@ public class Startup(IConfiguration configuration)
 
   private static void InitSwagger(IServiceCollection services)
   {
-    services.AddGrpcSwagger();
+    // services.AddGrpcSwagger();
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(c =>
     {
-      var filePath = Path.Combine(AppContext.BaseDirectory, "StorageServices.xml");
-      c.IncludeXmlComments(filePath);
-      c.IncludeGrpcXmlComments(filePath, includeControllerXmlComments: true);
+      // var filePath = Path.Combine(AppContext.BaseDirectory, "StorageServices.xml");
+      // c.IncludeXmlComments(filePath);
+      // c.IncludeGrpcXmlComments(filePath, includeControllerXmlComments: true);
 
       c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
       {
@@ -73,7 +75,7 @@ public class Startup(IConfiguration configuration)
           .SetIsOriginAllowed(i => true));
     });
     services.AddControllers();
-    services.AddGrpc().AddJsonTranscoding();
+    // services.AddGrpc().AddJsonTranscoding();
     services.AddScoped<MinioService>();
     services.Configure<FormOptions>(options =>
     {
@@ -96,8 +98,8 @@ public class Startup(IConfiguration configuration)
     app.UseAuthentication();
     app.UseAuthorization();
 
-    app.MapGrpcService<GreeterService>();
-    app.MapGrpcService<StorageService>();
+    // app.MapGrpcService<GreeterService>();
+    // app.MapGrpcService<StorageService>();
     app.MapControllers();
   }
 }

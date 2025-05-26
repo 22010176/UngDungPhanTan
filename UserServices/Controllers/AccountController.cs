@@ -26,8 +26,8 @@ public class UserController(AppDbContext context, UserService userService, Stora
     User? user = await _context.Users.Where(u => u.Email == mail).FirstOrDefaultAsync();
     if (user is null)
     {
-      await HttpContext.SignOutAsync("MyCookieAuth");
-      return NotFound();
+      // await HttpContext.SignOutAsync("MyCookieAuth");
+      return Unauthorized();
     }
     return Ok(new { user!.Id, user.Email, user.Root });
   }
@@ -45,18 +45,23 @@ public class UserController(AppDbContext context, UserService userService, Stora
     };
     await _context.Users.AddAsync(user);
     await _context.SaveChangesAsync();
-
+    // try
+    // {
+    //   var reply = await _storageClient.InitUserStorageAsync(new InitUserStorageRequest { BucketId = user.Root });
+    //   Console.WriteLine(reply.Status);
+    // }
+    // catch (System.Exception)
+    // {
+    //   throw;
+    // }
     // Send request to Storage server
-    var reply = await _storageClient.InitUserStorageAsync(new InitUserStorageRequest { BucketId = user.Root });
-
-    Console.WriteLine(reply.Status);
 
     return Ok(_context.Users.Where(u => u.Email == input.Email).FirstOrDefault());
   }
 
   [Authorize]
   [HttpPut]
-  public async Task<ActionResult> Put(UserInput input)
+  public ActionResult Put(UserInput input)
   {
 
     return Ok();
@@ -70,8 +75,8 @@ public class UserController(AppDbContext context, UserService userService, Stora
     User? user = await _context.Users.Where(u => u.Email == mail).FirstOrDefaultAsync()!;
     if (user == null)
     {
-      await HttpContext.SignOutAsync("MyCookieAuth");
-      return NotFound();
+      // await HttpContext.SignOutAsync("MyCookieAuth");
+      return Unauthorized();
     }
 
     _context.Users.Remove(user);

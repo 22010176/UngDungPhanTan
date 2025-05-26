@@ -29,7 +29,6 @@ public class DirectoryController(MinioService service) : ControllerBase
     var root = User.FindFirst("Root")?.Value;
     if (string.IsNullOrEmpty(root)) return Unauthorized();
 
-
     return Ok(input);
   }
 
@@ -43,6 +42,7 @@ public class DirectoryController(MinioService service) : ControllerBase
     string deletePath = path.Contains(root) ? path : string.Join('/', [root, path]);
     Console.WriteLine(deletePath);
     await minioService.DeleteFolder(deletePath);
+    // Console.WriteLine("Done");
 
     return Ok(path);
   }

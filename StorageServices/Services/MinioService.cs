@@ -10,6 +10,7 @@ namespace StorageServices.Services;
 public class MinioService
 {
   readonly string secret = "__SuperSecretValue";
+  readonly string bucket;
   public static IMinioClient CreateClient(string endpoint, string accessKey, string secretKey, bool useSSL)
   {
     var client = new MinioClient()
@@ -55,6 +56,8 @@ public class MinioService
     var accessKey = minioSection["AccessKey"]!;
     var secretKey = minioSection["SecretKey"]!;
     var useSSL = minioSection.GetValue<bool>("UseSSL")!;
+    bucket = minioSection["DefaultBucket"]!;
+
     client = CreateClient(endpoint, accessKey, secretKey, useSSL);
   }
 
@@ -73,7 +76,7 @@ public class MinioService
     string path = folderName + "/" + file.FileName;
     var stream = file.OpenReadStream();
     var args = new PutObjectArgs()
-      .WithBucket("test-bucket")
+      .WithBucket(bucket)
       .WithObject(path)
       .WithStreamData(stream)
       .WithObjectSize(-1)
@@ -83,7 +86,7 @@ public class MinioService
     {
       await client.PutObjectAsync(args);
       await client.StatObjectAsync(new StatObjectArgs()
-        .WithBucket("test-bucket")
+        .WithBucket(bucket)
         .WithObject(path));
 
       return true;
@@ -98,7 +101,7 @@ public class MinioService
   public async Task<bool> DeleteObject(string fileName)
   {
     var args = new RemoveObjectArgs()
-      .WithBucket("test-bucket")
+      .WithBucket(bucket)
       .WithObject(fileName);
 
     try { await client.RemoveObjectAsync(args); }
@@ -117,7 +120,7 @@ public class MinioService
     var emptyStream = new MemoryStream([0]);
     Console.WriteLine(path + secret);
     await client.PutObjectAsync(new PutObjectArgs()
-      .WithBucket("test-bucket")
+      .WithBucket(bucket)
       .WithObject(path + secret)
       .WithStreamData(emptyStream)
       .WithObjectSize(1)
@@ -128,7 +131,7 @@ public class MinioService
   public async Task<ICollection<Item>> GetListObjects(string folderName)
   {
     var args = new ListObjectsArgs()
-      .WithBucket("test-bucket")
+      .WithBucket(bucket)
       .WithPrefix(PathUtils.FixFolderPath(folderName))
       .WithRecursive(false)
       .WithVersions(false);
@@ -136,7 +139,8 @@ public class MinioService
     List<Item> items = [];
     await foreach (var item in client.ListObjectsEnumAsync(args).ConfigureAwait(false))
     {
-      if (!item.Key.Contains(secret)) items.Add(item);
+      // if (!item.Key.Contains(secret))
+      items.Add(item);
     }
 
     return items;
@@ -145,7 +149,7 @@ public class MinioService
   public async Task<ulong> GetFileSize(string path)
   {
     var args = new ListObjectsArgs()
-      .WithBucket("test-bucket")
+      .WithBucket(bucket)
       .WithPrefix(PathUtils.FixFolderPath(path))
       .WithRecursive(true)
       .WithVersions(false);
@@ -153,7 +157,8 @@ public class MinioService
     ulong size = 0;
     await foreach (var item in client.ListObjectsEnumAsync(args).ConfigureAwait(false))
     {
-      if (!item.Key.Contains(secret)) size += item.Size;
+      if (!item.Key.Contains(secret))
+        size += item.Size;
     }
     return size;
   }
@@ -163,11 +168,11 @@ public class MinioService
     Console.WriteLine($"Test {OldPath} {NewPath}");
 
     var copySource = new CopySourceObjectArgs()
-      .WithBucket("test-bucket")
+      .WithBucket(bucket)
       .WithObject(OldPath);
 
     var destSource = new CopyObjectArgs()
-      .WithBucket("test-bucket")
+      .WithBucket(bucket)
       .WithObject(NewPath)
       .WithCopyObjectSource(copySource);
 
@@ -188,26 +193,23 @@ public class MinioService
       .WithVersions(false);
 
     Console.WriteLine("\n\n");
-    List<string> files = [];
+    // List<string> files = [];
     await foreach (var item in client.ListObjectsEnumAsync(args).ConfigureAwait(false))
     {
       // if (item.IsDir) continue;
-      files.Add(item.Key);
+      // files.Add(item.Key);
+      Console.WriteLine($"{item.Key}\n");
+      // await DeleteObject(item.Key);
     }
 
     // Console.WriteLine(string.Join('\n', files));
 
 
     // if (files.Count == 0) return true;
-    foreach (var batch in files.Chunk(1000))
-    {
-      var delArgs = new RemoveObjectsArgs()
-        .WithBucket("test-bucket")
-        .WithObjects(batch);
-      var result = await client.RemoveObjectsAsync(delArgs);
-      foreach (var error in result)
-        Console.WriteLine($"Error deleting {error.Key}: {error.Message}");
-    }
+    // foreach (var batch in files.Chunk(1000))
+    // {
+    //   objectsToDelete.Add((obj.Key, obj.VersionId));
+    // }
 
     return true;
   }

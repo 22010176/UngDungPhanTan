@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const authService = 'http://localhost:5000/auth';
+const authService = 'http://localhost:3000/auth/auth';
+// const authService = 'http://localhost:5000/auth';
 
 export function InvalidTokenAction() {
   localStorage.clear();

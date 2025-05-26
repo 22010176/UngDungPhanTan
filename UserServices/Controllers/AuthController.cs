@@ -47,9 +47,9 @@ public class AuthController(AppDbContext context, UserService userService) : Con
 
   [Authorize]
   [HttpPost("logout")]
-  public async Task<IActionResult> Logout()
+  public IActionResult Logout()
   {
-    await HttpContext.SignOutAsync("MyCookieAuth");
+    // await HttpContext.SignOutAsync("MyCookieAuth");
     return Ok("Đăng xuất thành công");
   }
 
