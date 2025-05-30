@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const accountService = 'http://localhost:3000/auth/User/';
+const accountService = import.meta.env.VITE_USER_SERVICE_URL;
 
 export async function GetUser() {
   const res = await axios.get(accountService);

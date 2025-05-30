@@ -1,8 +1,7 @@
 import axios from "axios";
 
 // const storageService = 'http://localhost:3000/storage/Storage'
-const storageService = 'http://localhost:5001/Storage'
-
+const storageService = import.meta.env.VITE_STORAGE_SERVICE_URL
 
 export async function GetFileList(path = "") {
   const token = localStorage.getItem('token')

@@ -1,15 +1,16 @@
 import { UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Col, Input, Layout, Row, Space, message } from 'antd';
+import { Avatar, Button, Card, Col, Input, Layout, Row, Space } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import withContext from '@/hoc/withContext';
 import { Context, initialValues, reducer } from './context';
+import withAuth from '@/hoc/withAuth';
 
 const { Header, Content } = Layout;
 
 function Page() {
-  const [userInfo, setUserInfo] = useState({
+  const [userInfo,] = useState({
     name: 'Nguyen Van A',
     email: 'nguyenvana@example.com',
     phone: '+84 123 456 789',
@@ -18,30 +19,10 @@ function Page() {
   });
 
   const navigate = useNavigate()
-  const [editing, setEditing] = useState(false);
+  const [editing,] = useState(false);
   const [formData, setFormData] = useState(userInfo);
   const totalStorage = 100; // GB
   const usedStorage = 68.5; // GB
-
-  const handleSave = () => {
-    if (!formData.name || !formData.email) {
-      message.error('Vui lòng điền đầy đủ thông tin');
-      return;
-    }
-    setUserInfo(formData);
-    setEditing(false);
-    message.success('Thông tin đã được cập nhật');
-  };
-
-  const handleCancel = () => {
-    setFormData(userInfo);
-    setEditing(false);
-  };
-
-  const handleUpload = () => {
-    message.success('Avatar đã được cập nhật');
-    return false;
-  };
 
   return (
     <Content className="p-6 overflow-hidden">
@@ -52,13 +33,6 @@ function Page() {
             <Col span={6}>
               <div className="text-center">
                 <Avatar size={120} src={userInfo.avatar} icon={<UserOutlined />} />
-                {/* <div className="mt-3">
-                  <Upload beforeUpload={handleUpload} showUploadList={false}>
-                    <Button icon={<UploadOutlined />} size="small">
-                      Change picture
-                    </Button>
-                  </Upload>
-                </div> */}
               </div>
             </Col>
 
@@ -74,12 +48,6 @@ function Page() {
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       disabled={!editing}
                     />
-                    {/* <Input
-                        placeholder='lastname'
-                        value={editing ? formData.name : userInfo.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        disabled={!editing}
-                      /> */}
                     {/* </Space.Compact> */}
                   </Col>
                   <Col span={12}>
@@ -102,24 +70,6 @@ function Page() {
                   </Col>
                 </Row>
               </div>
-
-              {/* <Space className="mt-6">
-                {editing ? <>
-                  <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
-                    Lưu
-                  </Button>
-                  <Button onClick={handleCancel}>
-                    Hủy
-                  </Button>
-                </> : <>
-                  <Button color='orange' variant='solid' icon={<EditOutlined />} onClick={() => setEditing(true)}>
-                    Edit profile
-                  </Button>
-                  <Button color='red' variant='outlined' onClick={() => navigate("/change-password")}>
-                    Change password
-                  </Button>
-                </>}
-              </Space> */}
             </Col>
           </Row>
         </Card>
@@ -142,5 +92,5 @@ function Page() {
   );
 }
 
-const AccountManagement = withContext(Page, Context, initialValues, reducer)
+const AccountManagement = withAuth(withContext(Page, Context, initialValues, reducer))
 export default AccountManagement;

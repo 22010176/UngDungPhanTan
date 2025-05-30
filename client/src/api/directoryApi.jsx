@@ -1,7 +1,7 @@
 import axios from "axios"
 
 // const directoryService = 'http://localhost:3000/storage/Directory'
-const directoryService = 'http://localhost:5001/Directory'
+const directoryService = import.meta.env.VITE_DIRECTORY_URL;
 
 export async function CreateFolder(path = "") {
   if (path == '') return

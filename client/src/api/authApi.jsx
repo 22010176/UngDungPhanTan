@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const authService = 'http://localhost:3000/auth/auth';
+const authService = import.meta.env.VITE_AUTH_SERVICE_URL;
 // const authService = 'http://localhost:5000/auth';
 
 export function InvalidTokenAction() {

@@ -1,4 +1,20 @@
 services:
+  client:
+    container_name: client
+    build:
+      context: ./client
+      dockerfile: dockerfile
+    ports:
+      - ${CLIENT_PORT}:80
+    environment:
+      VITE_USER_SERVICE_URL: http://10.6.136.72:5000/User
+      VITE_AUTH_SERVICE_URL: http://10.6.136.72:5000/auth
+      VITE_STORAGE_SERVICE_URL: http://10.6.136.72:5001/Storage
+      VITE_DIRECTORY_URL: http://10.6.136.72:5001/Directory
+    depends_on:
+      - user-services
+      - storage-services
+
   user-services:
     container_name: user-service
     build:

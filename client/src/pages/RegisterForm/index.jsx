@@ -5,8 +5,9 @@ import { Link, useNavigate } from 'react-router';
 
 import { CreateUser } from '@/api/userApi';
 import withContext from '@/hoc/withContext';
-import { Context, initialValues, reducer } from './context';
 import withNoAuth from '@/hoc/withNoAuth';
+
+import { Context, initialValues, reducer } from './context';
 
 const Page = () => {
   const navigate = useNavigate()

@@ -139,8 +139,7 @@ public class MinioService
     List<Item> items = [];
     await foreach (var item in client.ListObjectsEnumAsync(args).ConfigureAwait(false))
     {
-      // if (!item.Key.Contains(secret))
-      items.Add(item);
+      if (!item.Key.Contains(secret)) items.Add(item);
     }
 
     return items;
@@ -162,7 +161,13 @@ public class MinioService
     }
     return size;
   }
+  // public async Task<Stream> Downloadfile(string path)
+  // {
+  //   MemoryStream stream = new();
+  //   // await client.
 
+
+  // }
   public async Task<bool> RenameFile(string OldPath, string NewPath)
   {
     Console.WriteLine($"Test {OldPath} {NewPath}");
